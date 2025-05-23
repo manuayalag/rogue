@@ -1,0 +1,14 @@
+10
+. . . . . . .      
+. . . . . . .      
+. . . . . B .      
+. . . . . . . + + +
+. . . . . . .     +
+. . . . . . . + + +
+. . . . . . P      
+. . . . . . .      
+. . . . . . .      
+. . . . . . .      
+
+Bandit can survive indefinitely, but optimal strategy requires
+moving toward the police in the first step.

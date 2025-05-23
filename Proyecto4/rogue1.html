@@ -1,0 +1,198 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+<title>
+COS 226 Programming Assignment Checklist: Rogue
+</title>
+</head><body>
+<h3>
+COS 226 Programming Assignment Checklist: Rogue
+</h3>
+
+<p>
+
+
+
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr align="left">
+<td bgcolor="#000000">
+<font size="+0" color="#ffffff" face="helvetica">
+</font><center><font size="+0" color="#ffffff" face="helvetica">Frequently Asked Questions</font></center>
+</td></tr></tbody></table>
+
+</p><p><b>What's the Manhattan distance?</b>
+If you have two sites located a coordinates (i1, j1) and (i2, j2),
+then the Manhattan distance between i and j is |i1 - i2| + |j1 - j2|.
+Is is the length you have to travel, assuming you can only move horizontally
+and vertically, as in Manhattan city blocks.
+
+</p><p>
+<b>How large will the dungeons be?</b>
+They will likely be very small, like the sample input files.
+Of course, this does not give you license to use grossly inefficient algorithms,
+Ideally, a linear amount of work <em>per move</em>, but quadratic is not too bad.
+Here, linear means proportional to N<sup>2</sup> since the input is of size N<sup>2</sup>.
+Do not worry much about the constants of proportionality, especially if
+if it makes your program easier to understand.
+
+</p><p>
+<b>I want another interface method for <tt>Game.java</tt>. Am I allowed to add one?</b>
+No, we will use our versions of <tt>Game.java</tt>, <tt>Dungeon.java</tt>, and
+<tt>Site.java</tt>, so you must stick to our specs.
+If you lobby convincingly to the instructor, we might add one and make it available
+to the whole class.
+
+</p><p>
+<b>Which should I implement first, the monster or the hero?</b>
+We recommend the monster strategy since it is probably easier to devise and implement.
+It is also a good starting point for the hero strategy.
+
+</p><p><b>Must my resulting strategies be optimal?</b>
+That's not a requirement. We believe our implementations are optimal
+on the dungeons supplied, but there are dungeons on which 
+they are sub-optimal.
+We will award extra credit if you supply such a dungeon.
+
+</p><p>
+<b>Can I run my ideas by the staff members?</b>
+Of course. We will do our best to poke holes
+in your strategies if we can.
+
+<!--
+<p><b>Can I use inheritance to reuse code?</b>
+Sure, it's reasonable to have a <tt>Player</tt> superclass,
+and <tt>Rogue</tt> and <tt>Monster</tt> subclasses. Note that
+constructors are not inherited in Java.
+-->
+
+</p><p><b>Do I need to use an explicit Graph?</b>
+No, but if you do, you can reuse the graph code from lecture or the Sedgewick
+book. Otherwise, you will have to re-create BFS and DFS (which is good
+programming experience).
+
+</p><p><b>Can I cheat?</b>
+The game engine <tt>Game.java</tt> is not industrial strength, and there may
+be some opportunities to cheat the system. Your monster and hero implementations
+must play by the rules. However, to encourage security awareness, we will award
+some extra credit if you indicate any weaknesses you can exploit and what
+changes you would need to make to prevent such hacking.
+
+</p><p>
+
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr align="left">
+<td bgcolor="#000000">
+<font size="+0" color="#ffffff" face="helvetica">
+</font><center><font size="+0" color="#ffffff" face="helvetica">Input, Output, and Testing</font></center>
+</td></tr></tbody></table>
+
+</p><p>
+<strong>Test dungeons.</strong>
+We have crafted a number of sample dungeons, named
+<tt>dungeon[A-Z].txt</tt>, each with a different starting configuration.
+Each file contains a brief description of what the dungeon is testing.
+You will certainly want to use some of these as test cases, and we will
+draw some of our grading test cases from these inputs.
+
+
+</p><p>
+
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr align="left">
+<td bgcolor="#000000">
+<font size="+0" color="#ffffff" face="helvetica">
+</font><center><font size="+0" color="#ffffff" face="helvetica">Submission and readme</font></center>
+</td></tr></tbody></table>
+</p><p>
+
+</p><p><b>Readme.</b>
+Here is a 
+<a href="ftp://ftp.cs.princeton.edu/pub/cs226/rogue/readme.txt">
+template readme.txt file</a>. Please answer all of the questions.
+
+</p><p><b>Grading.</b>
+Your monster and hero strategies will face off against our
+super-secret implementations in a fight to the death.
+
+
+</p><p>
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr align="left">
+<td bgcolor="#000000">
+<font size="+0" color="#ffffff" face="helvetica">
+</font><center><font size="+0" color="#ffffff" face="helvetica">Possible Progress Steps</font></center>
+</td></tr></tbody></table>
+
+</p><p>
+
+</p><ul>
+
+<p></p><li> Download the directory
+<a href="ftp://ftp.cs.princeton.edu/pub/cs226/rogue">rogue</a>.
+This directory is mirrored on arizona at
+<tt>/u/cos226/pub/rogue</tt>. It contains a number of 
+sample dungeons and the game engine (<tt>Game.java</tt>,
+<tt>Site.java</tt>, <tt>Dungeon.java</tt>, and <tt>In.java</tt>).
+
+<p></p></li><li> Try out your strategies with the interactive versions
+of the game <tt>rogue1.jar</tt> and <tt>rogue2.jar</tt>. In
+<tt>rogue1.jar</tt>, you are the monster and your goal is to
+intercept the computer rogue; in <tt>rogue2.jar</tt>, you are
+the rogue and your goal is to evade the monster.  To run the
+executable jar files, use the following commands.
+<blockquote><pre>% java -jar rogue1.jar &lt; dungeon.txt
+% java -jar rogue2.jar &lt; dungeon.txt
+</pre></blockquote>
+
+
+
+<p></p></li><li> Programs <tt>Monster.java</tt> and <tt>Rogue.java</tt>
+provide a template for the players. At each step the player
+chooses a random move among all legal moves. 
+Run the game using the default monster and rogue implementations.
+<blockquote><pre>java Game &lt; dungeon.txt | more
+</pre></blockquote>
+
+<p></p></li><li>
+
+<p></p></li><li>
+To implement the monster's strategy, you will almost certainly
+want to use BFS. Start with the provided file <tt>Monster.java</tt>,
+but rewrite the method <tt>move</tt> to implement your strategy.
+You may wish to modify the constructor so that it builds a graph
+of the underlying dungeon. If you do so, be sure to thoroughly test
+that it's building the graph correctly.
+
+<p></p></li><li>
+To implement the rogue's strategy, you may want to use both BFS
+and DFS. You can learn about using DFS to find the bridges in a graph 
+in Sedgewick, Chapter 18.6.
+
+</li></ul>
+
+
+<p>
+<table border="0" cellpadding="2" cellspacing="0" width="100%">
+<tbody><tr align="left">
+<td bgcolor="#000000">
+<font size="+0" color="#ffffff" face="helvetica">
+</font><center><font size="+0" color="#ffffff" face="helvetica">Enrichment Links</font></center>
+</td></tr></tbody></table>
+</p><p>
+
+</p><p>
+<b>Is there a Java version of the game?</b>
+Certainly, here is 
+<a href="http://members.chello.at/theodor.lauppert/games/rogue.htm">Rogue</a>.
+
+
+</p><p>
+<b>Where can I learn more about Rogue?</b>
+Here is a description of the
+<a href="http://www.the-spoiler.com/ADVENTURE/Computer.systems/rogue.2.html">26
+monsters</a> and information on weopons, potions, and treasure.
+
+
+
+</p></body></html>

@@ -1,0 +1,13 @@
+10
+          + + + + +
+          +       +
+. . . . . . . .   +
+. . . . . . . .   +
+. . P . . B . .   +
+. . . . . . . .   +
+. . . . . . . .   +
+          +       +
+          +       +
+          + + + + +
+
+Police can force a win by going E, but not NE or SE

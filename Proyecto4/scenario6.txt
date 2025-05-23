@@ -1,0 +1,14 @@
+10
++ + +              
++   +              
++ + +              
+  . . . .          
+  . . . .          
+  . . . .          
+  . . . . + + + + +
+  B . . . +       +
+  . . . . + + + + +
+  . . . P          
+
+Bandit can win by going to the further cycle, but not the
+nearest one.

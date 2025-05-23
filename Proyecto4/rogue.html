@@ -1,0 +1,257 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+<title>COS 226 Programming Assignment: Rogue
+</title>
+</head><body>
+<h3>COS 226 Programming Assignment</h3>
+<h2>Rogue</h2>
+
+<p>
+
+Design and implement an  effective strategy to seek out and intercept a
+moving adversary. Design and implement an effective counter-strategy
+to avoid being intercepted by such an adversary.
+
+
+</p><p>
+</p><p><b>Historical perspective.</b>
+In the late 1970s, Ken Arnold designed a C library (later to be named curses) that enabled
+the user to put a character at a specific location on the screen, enabling a crude
+form of interactive graphics.
+While experimenting with this new library, Michael Toy and Glen Wichman, designed a
+graphical adventure game coined
+<a href="http://www.hut.fi/%7Eeye/roguelike/rogue.html">Rogue</a>.
+The purpose of Rogue is "to descend into the Dungeons of Doom, defeat monsters,
+find treasure, and return to the surface with the amulet of Yendor using
+its levitation capabilities."
+<!-- One of the
+original features of Rogue was its random generation of dungeon terrain,
+so that each time you play the game, it is different. -->
+This revolutionary game became the undisputed most popular game on college
+campuses after it was included in BSD Unix 4.2 in 1980. It would later
+spawn the role-playing game (RPG) genre, including its direct descendant NetHack.
+
+</p><p>
+In 1984, a group of grad students at CMU developed a computer program
+named <a href="http://www.cs.princeton.edu/%7Eappel/papers/rogomatic.html">Rog-o-matic</a>
+to automatically play the game of Rogue. At one time, the Rog-o-matic
+player was the highest rated Rogue player at CMU.
+A crucial component of the Rog-o-matic algorithm was to avoid contact with
+the monster for as long as possible, so that the your health could
+regenerate before confronting the monster in a battle to the death.
+This involves an interesting graph search problem, and is the inspiration
+for this programming assignment.
+
+</p><p><strong>Rules of the game.</strong>
+The game of Rogue is played on an N-by-N grid that represents the dungeon.
+The rogue (typically a human player)
+is represented with the character <tt>@</tt>.
+The monster is represented by an uppercase letter. (In the real game of Rogue, there
+are 26 different monsters named <tt>A</tt> through
+<tt>Z</tt>, each with different capabilities.)
+The monster and rogue take turns making moves, with the monster going first.
+If the monster intercepts the rogue (occupies the same site), then 
+the monster burns/freezes/bludgeons the rogue to death, and the game ends.
+In each turn, a player either remains stationary or moves to an adjacent site.
+There are three types of sites: room, corridor, and wall, and they are
+represented by
+<tt>'.'</tt>, <tt>'+'</tt>,  and <tt>' '</tt>, respectively.
+If the player is in a room site, then they can
+move to an adjacent room site in one of the 8 compass directions
+(N, E, S, W, NW, NE, SW, SE) or a corridor site in one of the 4 
+directions (N, E, S, W). If the player is in a corridor site, then they can move
+to an adjacent room or corridor site in one of the 4 directions
+(N, E, S, W). The walls are impenetrable.
+
+
+</p><blockquote><pre>          + + + + +          . . . . . . . . A .
+          +       +          . . . . . . . . . .
+. . . . . . . .   +          . . . . . . . . . .
+. . . . . @ . .   +          . . . . . . . . . .
+. . I . . . . .   +          . . . . @ . . . . .
+. . . . . . . .   +          . . . . . . . . . .
+. . . . . . . .   +          . . . . . . . . . .
+          +       +          . . . . . . . . . .
+          +       +          . . . . . . . . . .
+          + + + + +          . . . . . . . . . .
+</pre></blockquote>
+
+In the first dungeon above, the rogue can avoid the <em>Ice</em> Monster <tt>I</tt>
+indefinitely by moving N and running around the corridor.
+In the second dungeon, the <em>Aquator</em> Monster <tt>A</tt> can use the
+diagonal moves to trap the rogue in a corner.
+
+
+<p><strong>Monster's strategy.</strong>
+The monster is tenacious and its sole mission is to chase and intercept the rogue.
+A natural strategy for the monster is to always take one step toward the rogue.
+In terms of the underlying graph, this means that the monster should compute
+a shortest path between itself and the rogue, and take one step
+along such a path. This strategy is not necessarily optimal, since there
+may be ties, and taking a step along one
+shortest path may be better than taking a step along another shortest path.
+For example, in the first dungeon below the <em>Bat</em> Monster's only optimal strategy
+is to take a step in the NE direction. Moving N or E would enable
+the rogue to make a mad dash for the opposite corridor entrance.
+In the second dungeon, the <em>Centaur</em> Monster can guarantee to intercept the rogue
+by moving E.
+
+</p><blockquote><pre>    + + + + + + + +                    + + + + + 
+    +             +                    +       +
+. . . . . . .     +          . . . . . . . .   +
+. . . . . . .     +          . . . . . . . .   +
+. . . . @ . .     +          . . C . . @ . .   +
+. . B . . . .     +          . . . . . . . .   +
+. . . . . . .     +          . . . . . . . .   +
+. . . . . . . + + +                    +       +
+. . . . . . .                          +       +
+. . . . . . .                          + + + + +
+
+
+</pre></blockquote>
+<p>
+Your first task is to implement an effective strategy for the monster.
+
+</p><p><strong>Rogue's strategy.</strong>
+The rogue's goal is to avoid the monster for as long as possible.
+A naive strategy is to move to an adjacent site that is as far as possible
+from the monster's current location.
+It is easy to see that this strategy may lead to a quick
+and unnecessary death, as in the second dungeon below where the rogue can
+avoid the <em>Jabberwock</em> Monster by moving SE.
+Another potentially deadly strategy would be to go to the nearest corridor.
+To avoid the <em>Flytrap</em> Monster, the rogue must move towards a
+northern hallway.
+
+</p><blockquote><pre>10
++ + +                        . . . . . . .     
++   +                        . . . . . . .         
++ + +                        . . . . . @ .            
+  . . . .                    . . . . . . . + + +  
+  . . . .                    . . . . . . .     +
+  . . . .                    . . . . . . . + + +
+  . . . . + + + + +          . . . . . . J
+  @ . . . +       +          . . . . . . .
+  . . . . + + + + +          . . . . . . .
+  . . . F                    . . . . . . .
+</pre></blockquote>
+<p>
+
+A more effective strategy is to identify a sequence of adjacent corridor and
+room sites which the rogue can run around in circles forever, thereby
+avoiding the monster indefinitely. This involves identifying
+and following certain cycles in the underlying graph.
+Of course, such cycles may not always exist, in which case your goal is
+to survive for as long as possible.
+
+
+</p><p>
+<strong>Input format.</strong>
+&nbsp;
+The input dungeon consists of an integer N, followed by N rows
+of 2N characters each.
+</p><blockquote><pre>10
+    + + + + + + + +
+    +             +
+. . . . . . .     +
+. . . . . . .     +
+. . . . @ . .     +
+. . B . . . .     +
+. . . . . . .     +
+. . . . . . . + + +
+. . . . . . .      
+. . . . . . .      
+</pre></blockquote>
+
+A <em>room</em> is a contiguous rectangular block of room sites.
+Because of dungeon construction safety requirements, rooms may not
+connect directly with each other. That is,
+any path from one room to another will use at least one 
+corridor site.
+There will be exactly one monster and one rogue, and each will start
+in some room site. Here are a number of 
+<a href="ftp://ftp.cs.princeton.edu/pub/cs226/rogue">sample dungeons</a>
+for testing.
+
+
+<p><strong>The rogue game engine.</strong>
+&nbsp;
+So that you can concentrate on the strategy part of the program, we provide
+some of the infrastructure. Your task is to write a program <tt>Monster.java</tt>
+that has the following interface.
+
+</p><blockquote><pre>public Monster(Game g)    // create a new monster who is playing a game g
+public Site move()        // return the adjacent site to which you are moving
+</pre></blockquote>
+
+and an analogous program <tt>Rogue.java</tt>.
+
+<blockquote><pre>public Rogue(Game g)      // create a new rogue who is playing a game g
+public Site move()        // return the adjacent site to which you are moving
+</pre></blockquote>
+
+<p>
+
+Program <tt>Game.java</tt> reads in the 
+dungeon from standard input and does the game playing and refereeing.
+It has three primary interface functions that will be needed by
+<tt>Rogue.java</tt> and <tt>Monster.java</tt>.
+
+
+</p><blockquote><pre>public Site getMonsterSite()                // return the site occupied by the monster
+public Site getRogueSite()                  // return the site occupied by the rogue
+public Dungeon getDungeon()                 // return the dungeon
+</pre></blockquote>
+
+Program <tt>Dungeon.java</tt> represents an N-by-N dungeon.
+
+<blockquote><pre>public boolean isLegalMove(Site v, Site w)  // is moving from site v to w legal?
+public boolean isCorridor(Site v)           // is site v a corridor site?
+public boolean isRoom(Site v)               // is site v a room site?
+public int size()                           // return N = dimension of dungeon
+</pre></blockquote>
+
+Program <tt>Site.java</tt> is a tiny data type that represents a
+location site in the N-by-N dungeon.
+
+<blockquote><pre>public Site(int i, int j)                   // instantiate a new Site for location (i, j)
+public int i()                              // get i coordinate
+public int j()                              // get j coordinate
+public int manhattan(Site w)                // return Manhattan distance from invoking site to w
+public boolean equals(Site w)               // is invoking site equal to w?
+</pre></blockquote>
+
+<p><strong>Deliverables.</strong>
+&nbsp;
+Submit your version of <tt>Monster.java</tt> and <tt>Rogue.java</tt>, along with any
+accompanying code and <tt>readme.txt</tt>.
+Justify your strategies, explaining their strengths and weaknesses.
+
+</p><p><strong>Extra credit.</strong>
+&nbsp;
+Submit some interesting dungeons that are useful for debugging,
+testing, and developing strategies. Describe each dungeon and
+why it is useful or interesting. Creativity will also be a factor.
+
+
+</p><p><strong>Challenges for the bored.</strong>
+&nbsp; There are limitless additional possibilities for creativity here.
+We don't really expect that you can do these now, but try them sometime
+for a challenge. Allow two monsters that can coordinate their attack.
+Make it work on arbitrary graphs. In the real game, you don't
+even know the whole graph until you start walking through it,
+so account for this. In the real game, the rogue collects
+treasure, potions, and powerful weapons while traveling through
+the dungeon. Modify your strategy to maximize the amount of material
+collected, while still avoiding the monster.
+
+
+</p><p>
+</p><address><small>
+This assignment was developed by Andrew Appel and Kevin Wayne.
+<br>Copyright © 2004.
+</small>
+</address>
+</body></html>
